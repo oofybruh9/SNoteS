@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head class="min-w-full min-h-full">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNoteS</title>
+    <link rel="stylesheet" href="./main.css">
+    <script src="./feather.min.js""></script>
+    <!-- default layout (twitter-inspired) -->
+    <style>
+        html, body, #mvidas{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- welcome div (only shows up once) -->
+    <div class=" w-full h-full p-10 m-0 text-center justify-center" id="welcom">
+        <h1 class="text-3xl font-bold">Welcome to SNoteS!</h1>
+        <h2 class="text-2xl font-bold">A notes app designed to look like a *S*ocial *N*etwork *S*ervice</h2>
+        <br>
+        <h3 class="text-xl font-medium">Please setup your experience.</h3>
+        <br><br>
+        <h4 class="text-lg font-medium">File System</h4>
+        <h5 class="text-md font-semibold">Used to save your notes, media and configs</h5>
+        <button type="button" class="p-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">Select Directory</button>
+        <h5 class="text-md font-semibold">if not setup, files will be saved in:</h5>
+        <ul class="list-none">
+            <li class="font-semibold">/Android/data/com.oofybruh9.snotes/files on Android</li>
+            <li class="font-semibold">~/.local/share/snotes/ on *Unix</li>
+            <li class="font-semibold">AppData/Local/SNoteS on Windows</li>
+            <li class="font-semibold">SNoteS.app folder on macOS</li>
+            <li class="font-semibold">inside the app on iOS</li>
+            <li class="font-semibold">temporary on the Web, so export data!</li>
+        </ul>
+        <br>
+        <h4 class="text-lg font-medium">Notifications</h4>
+        <h5 class="text-md font-semibold">Used to 'notify' you on when 'somebody posts' (great for fake twitter notifs for your skits or videos)</h5>
+        <button type="button" class="p-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">Allow Notifications</button>
+        <br>
+        <br>
+        <h1 class="text-2xl font-black">That should be it, have a great day!</h1>
+        <button type="button" class="p-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">Continue to SNoteS</button>
+    </div>
+    <!-- the actual content -->
+    <div class="flex flex-col sm:flex-row w-full h-full p-0 m-0 hidden transition-all duration-300 ease-in-out" id="mvidas">
+        <!-- temporary mobile nav opener -->
+        <nav class="flex flex-row z-50 bg-white/30 backdrop-blur-lg transition-all duration-300 ease-in-out">
+            <button id="open-menu" class="p-2 bg-blue-500 text-white rounded block sm:hidden cursor-pointer">...</button>
+        </nav>
+        <!-- tablet/desktop nav -->
+        <aside class="hidden sm:block border-x w-1/4 max-md:w-1/12 float-right transition-all duration-300 ease-in-out text-xl py-10">
+            <ul class="flex flex-col list-none float-right">
+                <li class="p-2">
+                    <button data-view="home" class="flex flex-row">
+                        <i data-feather="home" id="homed"></i>
+                        <p class="px-2 max-md:hidden">Home</p>
+                    </button>
+                </li>
+                <li class="p-2">
+                    <button data-view="search" class="flex flex-row">
+                        <i data-feather="search"></i>
+                        <p class="px-2 max-md:hidden">Search</p>
+                    </button>
+                </li>
+                <li class="p-2">
+                    <button data-view="notifications" class="flex flex-row">
+                        <i data-feather="bell"></i>
+                        <p class="px-2 max-md:hidden">Notifications</p>
+                    </button>
+                </li>
+                <li class="p-2">
+                    <button data-view="messages" class="flex flex-row">
+                        <i data-feather="mail"></i>
+                        <p class="px-2 max-md:hidden">Messages</p>
+                    </button>
+                </li>
+                <li class="p-2">
+                    <button data-view="profile" class="flex flex-row">
+                        <i data-feather="user"></i>
+                        <p class="px-2 max-md:hidden">Profile</p>
+                    </button>
+                </li>
+                <li class="p-2">
+                    <button data-view="addprofile" class="flex flex-row">
+                        <i data-feather="user-plus"></i>
+                        <p class="px-2 max-md:hidden">Add Profile</p>
+                    </button>
+                </li>
+                <li class="p-2">
+                    <button data-view="switchprofile" class="flex flex-row">
+                        <i data-feather="users"></i>
+                        <p class="px-2 max-md:hidden">Switch Profiles</p>
+                    </button>
+                </li>
+                <li class="p-2">
+                    <button data-view="saved" class="flex flex-row">
+                        <i data-feather="bookmark"></i>
+                        <p class="px-2 max-md:hidden">Saved</p>
+                    </button>
+                </li>
+                <li class="p-2">
+                    <button data-view="lists" class="flex flex-row">
+                        <i data-feather="list"></i>
+                        <p class="px-2 max-md:hidden">Lists</p>
+                    </button>
+                </li>
+                <li class="p-2">
+                    <button data-view="storage" class="flex flex-row">
+                        <i data-feather="hard-drive"></i>
+                        <p class="px-2 max-md:hidden">Storage</p>
+                    </button>
+                </li>
+                <li class="p-2">
+                    <button data-view="settings" class="flex flex-row">
+                        <i data-feather="settings"></i>
+                        <p class="px-2 max-md:hidden">Settings</p>
+                    </button>
+                </li>
+            </ul>
+        </aside>
+        <!-- Backdrop for mobile nav (hidden by default) -->
+        <div id="menu-backdrop" class="fixed inset-0 bg-black opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out z-40"></div>
+        <!-- mobile nav -->
+        <aside class="block sm:hidden fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 ease-in-out bg-white w-2/3 shadow-lg z-50" id="offcanvas-menu">
+            <div class="p-3">
+                <div class="">
+                    <img src="//placehold.co/100x100" alt="pfp" class="rounded-full w-20 h-20">
+                    <p>usernate</p>
+                    <p>@usernate</p>
+                    <div class="flex flex-row">
+                        <p><strong>67</strong> following</p>
+                        <span class="px-2" />
+                        <p><strong>15</strong> followers</p>
+                    </div>
+                </div>
+                <ul class="flex-row">
+                    <li class="py-2">
+                        <button data-view="profile" class="flex flex-row" id="mobile-button">
+                            <i data-feather="user"></i>
+                            <p class="px-2">Profile</p>
+                        </button>
+                    </li>
+                    <li class="py-2">
+                        <button data-view="addprofile" class="flex flex-row" id="mobile-button">
+                            <i data-feather="user-plus"></i>
+                            <p class="px-2">Add Profile</p>
+                        </button>
+                    </li>
+                    <li class="py-2">
+                        <button data-view="switchprofile" class="flex flex-row" id="mobile-button">
+                            <i data-feather="users"></i>
+                            <p class="px-2">Switch Profiles</p>
+                        </button>
+                    </li>
+                    <li class="py-2">
+                        <button data-view="saved" class="flex flex-row" id="mobile-button">
+                            <i data-feather="bookmark"></i>
+                            <p class="px-2">Saved</p>
+                        </button>
+                    </li>
+                    <li class="py-2">
+                        <button data-view="lists" class="flex flex-row" id="mobile-button">
+                            <i data-feather="list"></i>
+                            <p class="px-2">Lists</p>
+                        </button>
+                    </li>
+                    <li class="py-2">
+                        <button data-view="storage" class="flex flex-row" id="mobile-button">
+                            <i data-feather="hard-drive"></i>
+                            <p class="px-2">Storage</p>
+                        </button>
+                    </li>
+                    <li class="py-2">
+                        <button data-view="settings" class="flex flex-row" id="mobile-button">
+                            <i data-feather="settings"></i>
+                            <p class="px-2">Settings</p>
+                        </button>
+                    </li>
+                </ul>
+                <button id="close-menu" class="p-2 bg-red-500 text-white rounded mb-4 my-2 cursor-pointer">Close Menu</button>
+            </div>
+        </aside>
+        <!-- the main view -->
+        <main class="p-4 pb-18 sm:pb-0 sm:border-x flex-1 transition-transform duration-300 ease-out">
+            <section id="home" class="view">
+                <h1 class="text-3xl font-bold">Home</h1>
+                <p>Welcome to the chillest SPA.</p>
+                <p class="block sm:hidden">xs (mobile and smaller??)</p>
+                <p class="hidden sm:block md:hidden">sm (small tablets)</p>
+                <p class="hidden md:block lg:hidden">md (large tablets)</p>
+                <p class="hidden lg:block xl:hidden">lg (small laptops/desktops)</p>
+                <p class="hidden xl:block 2xl:hidden">xl (720p laptops/desktops)</p>
+                <p class="hidden 2xl:block">2xl (1080p laptops/desktops and bigger)</p>
+            </section>
+            <section id="search" class="view hidden">
+                <h1 class="text-3xl font-bold">Search</h1>
+                <br>
+                <form onsubmit="alert(document.getElementById('safdf').searchquery.value);return false" action="#" id="safdf">
+                    <label for="search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <i data-feather="search"></i>
+                        </div>
+                        <input type="search" id="search" name="searchquery" class="block w-full p-3 ps-9 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" placeholder="Search" required />
+                </div>
+            </form>
+            </section>
+            <section id="notifications" class="view hidden">
+                <h1 class="text-3xl font-bold">Notifications</h1>
+                <br>
+                <h2 class="text-2xl font-bold text-center">Hooray! No Notifications!</h2>
+                <div id="post" class="border-y-2 py-3 flex gap-3 flex-col">
+                    <div id="flex flex-col">
+                        <img src="//placehold.co/100x100" alt="pfp" class="rounded-full p-0 m-0 w-fit">
+                        <p class="font-bold">Username</p>
+                        <p>@usrenaem</p>
+                        <p>15 secs ago</p>
+                    </div>
+                    <p>Notification example text, maybe a fake like or something? <span class="text-blue-500 underline">@oofybruh9</span></p>
+                    <div id="action" class="flex flex-row gap-x-10">
+                        <button>
+                            <i data-feather="message-square" id="comment"></i>
+                        </button>
+                        <button>
+                            <i data-feather="repeat" class="rotate-90" id="repost"></i>
+                        </button>
+                        <button>
+                            <i data-feather="heart" id="like"></i>
+                        </button>
+                        <button>
+                            <i data-feather="bar-chart" id="analytics"></i>
+                        </button>
+                        <button>
+                            <i data-feather="bookmark"></i>
+                        </button>
+                        <button>
+                            <i data-feather="share-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <section id="messages" class="view hidden">
+                <h1 class="text-3xl font-bold">Messages</h1>
+                <br>
+                <h2 class="text-2xl font-bold text-center">Aww, come on, socialize!!!</h2>
+            </section>
+            <section id="profile" class="view hidden">
+                <img src="//placehold.co/640x260" alt="banner">
+                <img src="//placehold.co/100x100" alt="pfp" class="rounded-full">
+                <h1 class="text-3xl font-bold">Username</h1>
+                <p>@username</p>
+                <div>
+                    <button class="p-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">Follow</button>
+                    <button class="p-2 bg-gray-500 text-white rounded cursor-pointer hover:bg-gray-700">Message</button>
+                </div>
+                <p>username description example hahahahahaha</p>
+                <a href="//example.com" target="_blank">https://username.com</a>
+                <div class="flex flex-row gap-x-4">
+                    <p><strong>67</strong> following</p>
+                    <p><strong>15</strong> followers</p>
+                </div>
+                <div>
+                    <button class="p-2 bg-gray-500 text-white rounded cursor-pointer hover:bg-gray-700">Tweets</button>
+                    <button class="p-2 bg-gray-500 text-white rounded cursor-pointer hover:bg-gray-700">Tweets & Replies</button>
+                    <button class="p-2 bg-gray-500 text-white rounded cursor-pointer hover:bg-gray-700">Media</button>
+                    <button class="p-2 bg-gray-500 text-white rounded cursor-pointer hover:bg-gray-700">Likes</button>
+                </div>
+                <div id="posts-and-stuff">
+                    <!-- tbm -->
+                </div>
+            </section>
+            <section id="addprofile" class="view hidden">
+                <form action="#" id="sijash" onsubmit="return false">
+                <div class="flow-root w-full">
+                    <p class="float-left p-2">Add Profile</p>
+                    <button type="submit" class="p-2 bg-blend-normal text-blue-500 right-0 float-right">Save</button>
+                </div>
+                <img src="//placehold.co/640x260" alt="banner" class="rounded">
+                <img src="//placehold.co/100x100" alt="pfp" class="rounded-full p-2">
+                <div class="flex flex-col gap-3">
+                    <div class="relative">
+                        <input type="text" id="floating_standard" placeholder=" " />
+                        <label for="floating_standard" class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Name</label>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="floating_standard" class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer" placeholder=" " />
+                        <label for="floating_standard" class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Username</label>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="floating_standard" class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer" placeholder=" " />
+                        <label for="floating_standard" class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Following</label>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="floating_standard" class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer" placeholder=" " />
+                        <label for="floating_standard" class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Followers</label>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="floating_standard" class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer" placeholder=" " />
+                        <label for="floating_standard" class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Bio/Description</label>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="floating_standard" class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer" placeholder=" " />
+                        <label for="floating_standard" class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Fake Location</label>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="floating_standard" class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer" placeholder=" " />
+                        <label for="floating_standard" class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Website</label>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="floating_standard" class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer" placeholder=" " />
+                        <label for="floating_standard" class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Fake Birthdate</label>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="floating_standard" class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer" placeholder=" " />
+                        <label for="floating_standard" class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">idk</label>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="floating_standard" class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer" placeholder=" " />
+                        <label for="floating_standard" class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Pro category</label>
+                    </div>
+                    <label for="name">Professional Stamp?</label>
+                    <input type="checkbox" name="pro-stamp" class="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft">
+                    <label for="name">Private Account?</label>
+                    <input type="checkbox" name="private" class="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft">
+                    <label for="name">Switch to user immediately?</label>
+                    <input type="checkbox" name="change-user" class="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft">
+                    <button type="submit" class="p-2 bg-blend-normal text-blue-500 right-0 float-right">Save</button>
+                </div>
+                </form>
+            </section>
+            <section id="switchprofile" class="view hidden">
+                <h1 class="text-3xl font-bold">Switch Profile</h1>
+                <br>
+                <div class="flex flex-row flow-root">
+                    <div class="flex flex-row gap-x-4 float-left">
+                        <img src="//placehold.co/100x100" alt="pfp" class="rounded-full">
+                        <div class="flex flex-col">
+                            <p class="font-bold">Username</p>
+                            <p>@usrenaem</p>
+                            <p>username description example hahahahahahaha</p>
+                        </div>
+                    </div>
+                    <div class="float-right align-bottom gap-4 flex flex-col py-4">
+                        <button>
+                            <i data-feather="minus"></i>
+                        </button>
+                        <button>
+                            <i data-feather="settings"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <section id="saved" class="view hidden">
+                <h1 class="text-3xl font-bold">Saved</h1>
+                <br>
+                <h2 class="text-2xl font-bold text-center">Save some sh!t</h2>
+            </section>
+            <section id="lists" class="view hidden">
+                <h1 class="text-3xl font-bold">Lists</h1>
+                <br>
+                <h2 class="text-2xl font-bold text-center">Make some lists!</h2>
+            </section>
+            <section id="storage" class="view hidden">
+                <h1 class="text-3xl font-bold">Storage</h1>
+                <br>
+                <h2 class="text-2xl font-bold text-center">saved media and configs</h2>
+                <div class="p-4 gap-x-5">
+                    <button>media</button>
+                    <button>text</button>
+                    <button>profile configs</button>
+                    <button>raw data (folder browsing)</button>
+                </div>
+                <div id="container-for-stuff"></div>
+            </section>
+            <section id="settings" class="view hidden">
+                <h1 class="text-3xl font-bold">Settings</h1>
+                <br>
+                <div>
+                    <h4 class="text-lg font-medium">Theme</h4>
+                    <p>Insert any CSS theme into the box to either download for offline use or load directly from the web</p>
+                    <input type="text" placeholder="https://oofybruh9.is-a.dev/snotes/themes/catppuccin-twitter.css" class="w-full">
+                    <div class="flex flex-row gap-x-4 py-4">
+                        <button class="p-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">Load Theme</button>
+                        <button class="p-2 bg-gray-500 text-white rounded cursor-pointer hover:bg-gray-700">Download Theme</button>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-medium">Other Settings</h4>
+                    <p>tbm</p>
+                    <button class="hidden lg:block">fullscreen</button>
+                    <button class="hidden lg:block">language</button>
+                    <button class="hidden lg:block">accessibility</button>
+                </div>
+            </section>
+            <dialog id="post-modal" class="mx-auto h-screen top-5 w-screen rounded-lg transition-all duration-300 ease-in-out">
+                <div id="container">
+                <div id="header" class="flow-root p-2">
+                    <div class="float-left">
+                        <button onclick="document.getElementById('post-modal').close()">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+                    <div class="float-right flex flex-row">
+                        <button class="px-2">
+                            <i data-feather="eye"></i>
+                        </button>
+                        <button class="px-2">
+                            <i data-feather="clipboard"></i>
+                        </button>
+                        <button class="px-2">Post</button>
+                    </div>
+                    </div>
+                    <div id="main" class="p-2">
+                        <form action="#" id="posting" class="flex flex-col">
+                            <textarea name="whats-happening" id="whats-happening" placeholder="What's happening?" class="w-full text-xl"></textarea>
+                            <div id="media">
+                            </div>
+                            <label for="comment-num"># of comments</label>
+                            <input type="number" id="comment-num" placeholder="0">
+                            <label for="retweet-num"># of retweets</label>
+                            <input type="number" id="retweet-num" placeholder="0">
+                            <label for="cited-num"># of cited tweets</label>
+                            <input type="number" id="cited-num" placeholder="0">
+                            <label for="like-num"># of likes</label>
+                            <input type="number" id="like-num" placeholder="0">
+                            <label for="view-num"># of views</label>
+                            <input type="number" id="view-num" placeholder="0">
+                            <label for="date-posted">Date "posted"</label>
+                            <input type="datetime-local" id="date-posted">
+                            <label for="post-useragent">Where was it posted?</label>
+                            <input type="text" id="post-useragent" placeholder="e.g. Twitter for Android">
+                            <div id="button-for-media" class="mx-auto m-5">
+                                <p class="text-center">Embed Media:</p>
+                                <button>
+                                    <i data-feather="image" class="stroke-blue-500"></i>
+                                </button>
+                                <button>
+                                    <i data-feather="globe"></i>
+                                </button>
+                                <button>
+                                    <i data-feather="pen-tool"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+        </main>
+        <!-- right sidebar -->
+        <aside class="hidden md:block border-x w-1/3 transition-transform duration-300 ease-in-out">
+            <div id="container" class="m-3 p-2 border-2 rounded-2xl">
+                <h4 class="text-lg font-bold">You may like</h4>
+                <div class="flex flex-row p-3">
+                    <img src="//placehold.co/100x100" alt="pfp" width="40" height="40" class="rounded-full">
+                    <div class="flex flex-col px-4">
+                        <p class="font-bold">Username</p>
+                        <p>@usrenaem</p>
+                    </div>
+                    <div class="py-3">
+                        <button type="button">Follow</button>
+                    </div>
+                </div>
+                <div class="flex flex-row p-3">
+                    <img src="//placehold.co/100x100" alt="pfp" width="40" height="40" class="rounded-full">
+                    <div class="flex flex-col px-4">
+                        <p class="font-bold">Username</p>
+                        <p>@usrenaem</p>
+                    </div>
+                    <div class="py-3">
+                        <button type="button">Follow</button>
+                    </div>
+                </div>
+                <div class="flex flex-row p-3">
+                    <img src="//placehold.co/100x100" alt="pfp" width="40" height="40" class="rounded-full">
+                    <div class="flex flex-col px-4">
+                        <p class="font-bold">Username</p>
+                        <p>@usrenaem</p>
+                    </div>
+                    <div class="py-3">
+                        <button type="button">Follow</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <!-- small mobile bottom nav -->
+        <div class="fixed bottom-0 left-0 z-10 w-full h-16 bg-white/70 backdrop-blur-3xl border-t border-default block sm:hidden transition-transform duration-300 ease-in-out" id="mobile-bottomnav">
+            <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
+                <button type="button" data-view="home" class="inline-flex flex-col items-center justify-center px-5 hover:bg-neutral-secondary-medium group">
+                    <i data-feather="home" id="homem"></i>
+                </button>
+                <button type="button" data-view="search" class="inline-flex flex-col items-center justify-center px-5 hover:bg-neutral-secondary-medium group">
+                    <i data-feather="search"></i>
+                </button>
+                <button type="button" data-view="notifications" class="inline-flex flex-col items-center justify-center px-5 hover:bg-neutral-secondary-medium group">
+                    <i data-feather="bell"></i>
+                </button>
+                <button type="button" data-view="messages" class="inline-flex flex-col items-center justify-center px-5 hover:bg-neutral-secondary-medium group">
+                    <i data-feather="mail"></i>
+                </button>
+            </div>
+        </div>
+        <!-- floating action button-->
+        <button class="fixed bottom-18 right-4 sm:bottom-5 sm:right-5 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-20" onclick="document.getElementById('post-modal').showModal()">
+            <i data-feather="plus"></i>
+        </button>
+        <script>
+            feather.replace({ "width": 27, "height": 27 })
+            if (window.innerWidth < 640) {
+                document.querySelector('#homem').classList.add('fill-blue-400', 'stroke-blue-600')
+            } else {
+                document.querySelector('#homed').classList.add('fill-blue-400', 'stroke-blue-600')
+            }
+            // welcome code
+            const welcomeDiv = document.getElementById('welcom');
+            const maindivpleasefuckingwork = document.getElementById('mvidas');
+            const setupComplete = true;
+            if (setupComplete) {
+                welcomeDiv.classList.add('hidden');
+                maindivpleasefuckingwork.classList.remove('hidden');
+            }
+            // mobile nav thingy
+            // Select the backdrop element
+            const menuBackdrop = document.getElementById('menu-backdrop');
+            const openMenuButton = document.getElementById('open-menu');
+            const closeMenuButton = document.getElementById('close-menu');
+            const menuItems = document.querySelectorAll('#mobile-button')
+            const offcanvasMenu = document.getElementById('offcanvas-menu');
+            function openMenu() {
+                offcanvasMenu.classList.remove('translate-x-full');
+                offcanvasMenu.classList.add('translate-x-0');
+                // Show the backdrop and make it clickable
+                menuBackdrop.classList.remove('opacity-0', 'pointer-events-none');
+                menuBackdrop.classList.add('opacity-50', 'pointer-events-auto');
+            }
+            function closeMenu() {
+                offcanvasMenu.classList.remove('translate-x-0');
+                offcanvasMenu.classList.add('-translate-x-full');
+                // Hide the backdrop and disable clicks
+                menuBackdrop.classList.remove('opacity-50', 'pointer-events-auto');
+                menuBackdrop.classList.add('opacity-0', 'pointer-events-none');
+            }
+            // Add event listener to close menu via backdrop click
+            openMenuButton.addEventListener('click', openMenu);
+            closeMenuButton.addEventListener('click', closeMenu);
+            menuBackdrop.addEventListener('click', closeMenu);
+            menuItems.forEach((item, index) => {
+                item.addEventListener('click', closeMenu);
+            });
+
+            // single page app thingy
+            const views = [...document.querySelectorAll(".view")];
+            let current = views.find(v => !v.classList.contains("hidden"));
+
+            function showView(id) {
+                if (current.id === id) return;
+
+                const next = document.getElementById(id);
+
+                // prep incoming view (off-screen, slightly zoomed)
+                next.classList.remove("hidden");
+                next.classList.add(
+                    "translate-x-full",
+                    "scale-105",
+                    "opacity-0"
+                );
+
+                // force layout
+                next.getBoundingClientRect();
+
+                // animate
+                current.classList.add(
+                    "-translate-x-1/3",
+                    "opacity-0"
+                );
+
+                next.classList.remove(
+                    "translate-x-full",
+                    "scale-105",
+                    "opacity-0"
+                );
+
+                // cleanup
+                setTimeout(() => {
+                    current.classList.add("hidden");
+                    current.classList.remove(
+                        "-translate-x-1/3",
+                        "opacity-0"
+                    );
+                    current = next;
+                }, 300);
+            }
+
+            document.addEventListener("click", (e) => {
+                const cvg = document.querySelector('.fill-blue-400')
+                const btn = e.target.closest("[data-view]");
+                if (!btn) return;
+                const svg = btn.querySelector('.feather')
+                showView(btn.dataset.view);
+                cvg.classList.remove('fill-blue-400', 'stroke-blue-600')
+                svg.classList.add('fill-blue-400', 'stroke-blue-600')
+                feather.replace()
+            });
+        </script>
+    </div>
+    </body>
+
+</html>

@@ -1,0 +1,7 @@
+/* the base css (before tailwind conversion) */
+/* convert with npx tailwindcss -i src/css.css -o src/main.css --watch */
+
+@import "tailwindcss";
+.view {
+    @apply transition-[transform,opacity] duration-300 ease-[cubic-bezier(.2,.8,.2,1)];
+}
